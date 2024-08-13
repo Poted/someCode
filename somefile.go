@@ -2,21 +2,28 @@ package main
 
 import (
 	"codewars/remote"
-	"time"
+	"fmt"
 )
 
 func main() {
 
 	rm := remote.Connect()
 
-	fieldConnType := rm.Connection.Url
-	childStructMethod := rm.Connection.URLWithID("connection url")
-	parentStructMethod := rm.Connection.OtherFunction(12)
+	rm.Storage.FileID = 2
+	strg := rm.Storage
 
-	parentMethodAvailableForEveryType := rm.Images.OtherFunction(2)
-	fieldImagesType := rm.Images.Url
-	encapsulatedMethodHiddenUsingField := rm.Images.Download(233)
+	newfile, err := strg.FileDownload(20)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+	}
 
-	time.Sleep(4 * time.Second)
+	fmt.Printf("newfile: %v\n", newfile)
 
+	fmt.Printf("strg.FileID: %v\n", strg.FileID)
+
+	conn := rm.Connection
+
+	fmt.Printf("conn.URL: %v\n", conn.URL())
+	fmt.Printf("conn.URLWithID(30): %v\n", conn.UpdateUrl("some").URL())
+	fmt.Printf("conn.URL: %v\n", conn.URL())
 }

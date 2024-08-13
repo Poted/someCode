@@ -22,48 +22,45 @@ var (
 
 func Connect() *remote {
 
-	if Remote != nil {
-		return Remote
+	if Remote == nil {
+
+		once.Do(func() {
+
+			Remote = &remote{
+
+				Connection: connection{
+					urls{
+						url: connection_url,
+					},
+				},
+
+				Storage: storage{
+					urls{
+						storage_url,
+					},
+					download{
+						// FileID: Remote.Images.FileID, // access between fields in initialization? cause panic
+					},
+				},
+				Images: images{
+					urls{
+						images_url,
+					},
+					download{},
+				},
+			}
+		})
 	}
-
-	once.Do(func() {
-
-		Remote = &remote{
-
-			Connection: connection{
-				urls{
-					Url: connection_url,
-				},
-			},
-
-			Storage: storage{
-				urls{
-					Url: storage_url,
-				},
-				download{
-					Download: fileDownload,
-				},
-			},
-			Images: images{
-				urls{
-					Url: images_url,
-				},
-				download{
-					Download: fileDownload,
-				},
-			},
-		}
-	})
-
 	return Remote
 }
 
 type urls struct {
-	Url string
+	url string // private field for const/private data
 }
 
 type download struct {
-	Download func(id int) error
+	FileID int // public fields that may be changed freely
+	File   []byte
 }
 
 type connection struct {
@@ -80,13 +77,18 @@ type images struct {
 	download
 }
 
-func (c *connection) URLWithID(id string) *connection {
-	c.urls.Url = "connection url with id: %s" + id
-	return c
+// getters and setters for encapsulated operations
+func (c *connection) URL() string {
+	return c.urls.url
 }
 
-func (s *storage) StorageURLWithID(id string) string {
-	return storage_url + id
+func (c *connection) UpdateUrl(id string) *connection { // Same name different type and probably different logic
+	c.urls.url = "connection url with id: " + id // this connection return is to add direct access to .Url() getter after calling this function
+	return c                                     // put
+}
+
+func (s *storage) UpdateUrl(id string) string { // Different return type
+	return storage_url + id // read modified only
 }
 
 func (u *urls) OtherFunction(number int) string {
@@ -95,8 +97,18 @@ func (u *urls) OtherFunction(number int) string {
 
 }
 
-func fileDownload(id int) error {
+func (d *download) FileDownload(id int) ([]byte, error) {
 
-	fmt.Printf("file with %d downloaded!")
+	fmt.Printf("downloading file with id: %d!\n", id)
+
+	return d.File, d.saveFile(id)
+}
+
+func (d *download) saveFile(id int) error { // private method
+
+	d.File = []byte{byte(id)}
+	d.FileID = id
+
+	fmt.Printf("file with id %d saved!\n", id)
 	return nil
 }
