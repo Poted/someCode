@@ -64,11 +64,11 @@ type download struct {
 }
 
 type connection struct {
-	urls
+	urls // inherited field
 }
 
 type storage struct {
-	urls
+	urls urls // fields are not inherited
 	download
 }
 
@@ -83,12 +83,17 @@ func (c *connection) URL() string {
 }
 
 func (c *connection) UpdateUrl(id string) *connection { // Same name different type and probably different logic
-	c.urls.url = "connection url with id: " + id // this connection return is to add direct access to .Url() getter after calling this function
+	c.urls.url = "connection url with id: " + id // this connection return is to add direct access to .Url() getter as well as to other fields after calling this function
 	return c                                     // put
 }
 
-func (s *storage) UpdateUrl(id string) string { // Different return type
-	return storage_url + id // read modified only
+func (s *storage) UpdateUrl(id string) []byte { // Different return type for returning only
+
+	s. = "new url with id: " + id
+
+	fmt.Printf("s.urls.url: %v\n", s.urls.url)
+
+	return []byte(id) // read modified only
 }
 
 func (u *urls) OtherFunction(number int) string {
