@@ -68,8 +68,8 @@ type connection struct {
 }
 
 type storage struct {
-	urls urls // fields are not inherited
-	download
+	urls      urls // fields are not inherited
+	doownload download
 }
 
 type images struct {
@@ -89,7 +89,7 @@ func (c *connection) UpdateUrl(id string) *connection { // Same name different t
 
 func (s *storage) UpdateUrl(id string) []byte { // Different return type for returning only
 
-	s. = "new url with id: " + id
+	s.urls.url = "new url with id: " + id
 
 	fmt.Printf("s.urls.url: %v\n", s.urls.url)
 
