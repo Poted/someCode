@@ -33,20 +33,12 @@ func Connect() *remote {
 			Connection: connection{
 				urls{
 					Url: connection_url,
-					// UrlWithID: connectionURLWithID,
-					// OtherFunc: func(number int) string {
-					// 	return ""
-					// },
 				},
 			},
 
 			Storage: storage{
 				urls{
-					Url:       storage_url,
-					UrlWithID: storageURLWithID,
-					OtherFunc: func(number int) string {
-						return ""
-					},
+					Url: storage_url,
 				},
 				download{
 					Download: fileDownload,
@@ -55,10 +47,6 @@ func Connect() *remote {
 			Images: images{
 				urls{
 					Url: images_url,
-					// OtherFunc: otherFunction,
-					// UrlWithID: func(id string) string {
-					// 	return ""
-					// },
 				},
 				download{
 					Download: fileDownload,
@@ -71,13 +59,11 @@ func Connect() *remote {
 }
 
 type urls struct {
-	Url       string
-	UrlWithID func(id string) string
-	OtherFunc func(number int) string
+	Url string
 }
 
 type download struct {
-	Download func(id int)
+	Download func(id int) error
 }
 
 type connection struct {
@@ -99,18 +85,18 @@ func (c *connection) URLWithID(id string) *connection {
 	return c
 }
 
-func (s *storage) storageURLWithID(id string) string {
+func (s *storage) StorageURLWithID(id string) string {
 	return storage_url + id
 }
 
-func otherFunction(number int) string {
+func (u *urls) OtherFunction(number int) string {
 
 	return fmt.Sprintf("soem: %d", 220+number)
 
 }
 
-func fileDownload(id int) {
+func fileDownload(id int) error {
 
 	fmt.Printf("file with %d downloaded!")
-
+	return nil
 }

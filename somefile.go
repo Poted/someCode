@@ -2,7 +2,6 @@ package main
 
 import (
 	"codewars/remote"
-	"fmt"
 	"time"
 )
 
@@ -10,9 +9,13 @@ func main() {
 
 	rm := remote.Connect()
 
-	fmt.Printf("rm.Connection.Url: %v\n", rm.Connection.Url)
+	fieldConnType := rm.Connection.Url
+	childStructMethod := rm.Connection.URLWithID("connection url")
+	parentStructMethod := rm.Connection.OtherFunction(12)
 
-	fmt.Printf("rm.Connection.ConnectionURLWithID(\"20\"): %v\n", rm.Connection.URLWithID("20").Url)
+	parentMethodAvailableForEveryType := rm.Images.OtherFunction(2)
+	fieldImagesType := rm.Images.Url
+	encapsulatedMethodHiddenUsingField := rm.Images.Download(233)
 
 	time.Sleep(4 * time.Second)
 
